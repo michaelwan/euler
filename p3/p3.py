@@ -1,28 +1,7 @@
 from datetime import datetime
+from prime.generate_prime import next_prime
 
-_current_prime_list = []
 _current_factors = {}
-
-def _is_prime(n):
-    for i in _current_prime_list:
-        if n % i == 0:
-            return False
-    return True
-
-
-def _next_prime():
-    number = 2
-    while True:
-        if number == 2:
-            _current_prime_list.append(number)
-            yield number
-            number += 1
-        elif _is_prime(number):
-            _current_prime_list.append(number)
-            yield number
-            number += 2
-        else:
-            number += 2
 
 
 def _compare_with_multiply_all_factors(n):
@@ -45,7 +24,7 @@ def _calculate_exponent_of_factor(n, p):
 
 def _largest_prime_factor(n):
     factor = 1
-    for p in _next_prime():
+    for p in next_prime():
         if _compare_with_multiply_all_factors(n):
             break
         if n % p == 0:
@@ -53,30 +32,6 @@ def _largest_prime_factor(n):
             print("Found a prime factor ", p, " with exponent ", _current_factors[p], " at ", datetime.now().time())
             if factor < p:
                 factor = p
-    return factor
-
-
-def _largest_prime_factor_recursive(n):
-    """
-    This is not working because we are generating prime numbers while checking which one
-    is a factor for the number. For a number that's a lot larger than the last prime found
-    _is_prime() won't be able to tell whether the number is a prime accurately.
-    """
-    for p in _next_prime():
-        if p * _current_prime_list[len(_current_prime_list) - 1] > n:
-            break
-        if n % p == 0:
-            print("Found a prime factor ", p, " at ", datetime.now().time())
-            factor = p
-            reduced = n // p
-            while reduced % p == 0:
-                reduced = n // p
-            if _is_prime(reduced):
-                next_factor = reduced
-            else:
-                next_factor = _largest_prime_factor_recursive(reduced)
-            if next_factor > factor:
-                factor = next_factor
     return factor
 
 
